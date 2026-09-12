@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-NovosigaApplication<novosiga>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.novosiga.novosiga.NovosigaApplication",
+            "projectName": "novosiga",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
