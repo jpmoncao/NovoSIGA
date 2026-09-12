@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Formulário do pedido', 'pedido', 'Pedidos', 'Cadastros / Pedidos', ~{::content}, ~{::extra})}">
+<body>
+<th:block th:fragment="content">
+    <div class="page-head">
+        <div>
+            <h2 th:text="${pedido.idPedido != null} ? 'Editar pedido' : 'Novo pedido'">Formulário do pedido</h2>
+            <p>Informe o aluno e os produtos do pedido. O total é calculado automaticamente.</p>
+        </div>
+        <a th:href="@{/pedido/listar}" class="btn btn-ghost">Voltar à lista</a>
+    </div>
+
+    <div class="panel form-panel form-panel-wide">
+        <div class="panel-body">
+            <form th:action="@{/pedido/salvar}" th:object="${pedido}" method="post" id="formPedido">
+                <input type="hidden" th:field="*{idPedido}">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="idAluno" class="form-label">Aluno</label>
+                        <select class="form-select" id="idAluno" th:field="*{aluno.idAluno}" required>
+                            <option value="">Selecione o aluno</option>
+                            <option th:each="aluno : ${alunos}"
+                                    th:value="${aluno.idAluno}"
+                                    th:text="${aluno.nomeAluno}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="data" class="form-label">Data</label>
+                        <input type="date" class="form-control" id="data" name="data"
+                               th:value="${pedido.data != null} ? ${#temporals.format(pedido.data, 'yyyy-MM-dd')} : ''"
+                               required>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h3 class="section-title mb-0">Itens do pedido</h3>
+                    <button type="button" class="btn btn-ghost btn-sm" id="btnAdicionarItem">Adicionar item</button>
+                </div>
+
+                <div class="table-responsive mb-3">
+                    <table class="table data-table item-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Quantidade</th>
+                                <th>Preço</th>
+                                <th>Subtotal</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="itensBody">
+                            <tr class="item-row" th:each="item, stat : *{itens}">
+                                <td>
+                                    <select class="form-select item-produto" th:field="*{itens[__${stat.index}__].produto.idProduto}" required>
+                                        <option value="">Selecione o produto</option>
+                                        <option th:each="produto : ${produtos}"
+                                                th:value="${produto.idProduto}"
+                                                th:text="${produto.descricao + ' — ' + produto.marca}"
+                                                th:data-valor="${produto.valor}"></option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control item-quantidade"
+                                           th:field="*{itens[__${stat.index}__].quantidade}" min="1" value="1" required>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control item-preco" readonly tabindex="-1">
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control item-subtotal" readonly tabindex="-1">
+                                </td>
+                                <td class="text-end">
+                                    <button type="button" class="btn btn-sm btn-danger-quiet btn-remover-item">Remover</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="help" th:if="${#lists.isEmpty(produtos)}">Cadastre ao menos um produto antes de montar um pedido.</p>
+
+                <div class="pedido-total mb-4">
+                    <span>Total</span>
+                    <strong id="totalPedido">R$ 0,00</strong>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-accent">Salvar</button>
+                    <a th:href="@{/pedido/listar}" class="btn btn-ghost">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <template id="itemRowTemplate">
+        <tr class="item-row">
+            <td>
+                <select class="form-select item-produto" name="itens[0].produto.idProduto" required>
+                    <option value="">Selecione o produto</option>
+                    <option th:each="produto : ${produtos}"
+                            th:value="${produto.idProduto}"
+                            th:text="${produto.descricao + ' — ' + produto.marca}"
+                            th:data-valor="${produto.valor}"></option>
+                </select>
+            </td>
+            <td>
+                <input type="number" class="form-control item-quantidade" name="itens[0].quantidade" min="1" value="1" required>
+            </td>
+            <td>
+                <input type="text" class="form-control item-preco" readonly tabindex="-1">
+            </td>
+            <td>
+                <input type="text" class="form-control item-subtotal" readonly tabindex="-1">
+            </td>
+            <td class="text-end">
+                <button type="button" class="btn btn-sm btn-danger-quiet btn-remover-item">Remover</button>
+            </td>
+        </tr>
+    </template>
+</th:block>
+<th:block th:fragment="extra">
+    <script>
+        function formatarMoeda(valor) {
+            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function obterValorProduto(select) {
+            const option = select.options[select.selectedIndex];
+            if (!option || !option.value) {
+                return 0;
+            }
+            return Number(option.dataset.valor || 0);
+        }
+
+        function reindexarItens() {
+            document.querySelectorAll('#itensBody .item-row').forEach((row, index) => {
+                const produto = row.querySelector('.item-produto');
+                const quantidade = row.querySelector('.item-quantidade');
+                produto.name = 'itens[' + index + '].produto.idProduto';
+                quantidade.name = 'itens[' + index + '].quantidade';
+            });
+        }
+
+        function atualizarLinha(row) {
+            const select = row.querySelector('.item-produto');
+            const quantidadeInput = row.querySelector('.item-quantidade');
+            const preco = obterValorProduto(select);
+            const quantidade = Number(quantidadeInput.value || 0);
+            const subtotal = preco * quantidade;
+            row.querySelector('.item-preco').value = formatarMoeda(preco);
+            row.querySelector('.item-subtotal').value = formatarMoeda(subtotal);
+            return subtotal;
+        }
+
+        function atualizarTotais() {
+            let total = 0;
+            document.querySelectorAll('#itensBody .item-row').forEach((row) => {
+                total += atualizarLinha(row);
+            });
+            document.getElementById('totalPedido').textContent = formatarMoeda(total);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const body = document.getElementById('itensBody');
+            const template = document.getElementById('itemRowTemplate');
+
+            document.getElementById('btnAdicionarItem').addEventListener('click', function () {
+                const clone = template.content.firstElementChild.cloneNode(true);
+                body.appendChild(clone);
+                reindexarItens();
+                atualizarTotais();
+            });
+
+            body.addEventListener('click', function (event) {
+                const botao = event.target.closest('.btn-remover-item');
+                if (!botao) {
+                    return;
+                }
+                const rows = body.querySelectorAll('.item-row');
+                if (rows.length === 1) {
+                    const row = rows[0];
+                    row.querySelector('.item-produto').value = '';
+                    row.querySelector('.item-quantidade').value = 1;
+                    atualizarTotais();
+                    return;
+                }
+                botao.closest('.item-row').remove();
+                reindexarItens();
+                atualizarTotais();
+            });
+
+            body.addEventListener('change', atualizarTotais);
+            body.addEventListener('input', atualizarTotais);
+            atualizarTotais();
+        });
+    </script>
+</th:block>
+</body>
+</html>

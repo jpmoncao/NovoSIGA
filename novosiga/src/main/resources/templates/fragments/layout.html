@@ -63,6 +63,14 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
                 <i class="bi bi-journal-text"></i>
                 <span class="nav-text">Disciplinas</span>
             </a>
+            <a class="nav-link" th:href="@{/produto/listar}" title="Produtos" th:classappend="${nav == 'produto'} ? ' is-active'">
+                <i class="bi bi-box-seam"></i>
+                <span class="nav-text">Produtos</span>
+            </a>
+            <a class="nav-link" th:href="@{/pedido/listar}" title="Pedidos" th:classappend="${nav == 'pedido'} ? ' is-active'">
+                <i class="bi bi-receipt"></i>
+                <span class="nav-text">Pedidos</span>
+            </a>
         </nav>
 
         <div class="sidebar-foot">

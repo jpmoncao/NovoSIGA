@@ -51,6 +51,26 @@
                 <a th:href="@{/disciplina/criar}" class="btn btn-ghost">Nova disciplina</a>
             </div>
         </article>
+        <article class="directory-row">
+            <div>
+                <h3>Produtos</h3>
+                <p>Descrição, marca, modelo, valor e foto dos produtos.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a th:href="@{/produto/listar}" class="btn btn-accent">Ver produtos</a>
+                <a th:href="@{/produto/criar}" class="btn btn-ghost">Novo produto</a>
+            </div>
+        </article>
+        <article class="directory-row">
+            <div>
+                <h3>Pedidos</h3>
+                <p>Pedido do aluno com itens, quantidade, preço e subtotal.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a th:href="@{/pedido/listar}" class="btn btn-accent">Ver pedidos</a>
+                <a th:href="@{/pedido/criar}" class="btn btn-ghost">Novo pedido</a>
+            </div>
+        </article>
     </div>
 </th:block>
 <th:block th:fragment="extra"></th:block>

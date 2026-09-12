@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Produtos', 'produto', 'Produtos', 'Cadastros', ~{::content}, ~{::extra})}">
+<body>
+<th:block th:fragment="content">
+    <div class="page-head">
+        <div>
+            <h2>Lista de produtos</h2>
+            <p>Registros cadastrados no sistema.</p>
+        </div>
+        <a th:href="@{/produto/criar}" class="btn btn-accent">Novo produto</a>
+    </div>
+
+    <div class="panel">
+        <div class="table-responsive">
+            <table class="table data-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>ID</th>
+                        <th>Descrição</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                        <th>Valor</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(produtos)}">
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <h3>Nenhum produto cadastrado</h3>
+                                <p>Inclua o primeiro registro para vê-lo nesta lista.</p>
+                                <a th:href="@{/produto/criar}" class="btn btn-accent">Cadastrar produto</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:each="produto : ${produtos}">
+                        <td>
+                            <img th:if="${produto.foto != null}"
+                                 th:src="@{/produto/foto/{idProduto}(idProduto=${produto.idProduto})}"
+                                 alt="Foto do produto" class="avatar">
+                            <img th:if="${produto.foto == null}"
+                                 src="https://placehold.net/product.png"
+                                 alt="Sem foto" class="avatar">
+                        </td>
+                        <td th:text="${produto.idProduto}"></td>
+                        <td th:text="${produto.descricao}"></td>
+                        <td th:text="${produto.marca}"></td>
+                        <td th:text="${produto.modelo}"></td>
+                        <td th:text="${#numbers.formatCurrency(produto.valor)}"></td>
+                        <td class="text-end text-nowrap">
+                            <a th:href="@{/produto/editar/{id}(id=${produto.idProduto})}" class="btn btn-sm btn-ghost">Editar</a>
+                            <a th:href="@{/produto/excluir/{id}(id=${produto.idProduto})}"
+                               class="btn btn-sm btn-danger-quiet"
+                               onclick="return confirm('Deseja realmente excluir este produto?');">Excluir</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</th:block>
+<th:block th:fragment="extra"></th:block>
+</body>
+</html>

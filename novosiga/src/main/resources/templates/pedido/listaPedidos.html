@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Pedidos', 'pedido', 'Pedidos', 'Cadastros', ~{::content}, ~{::extra})}">
+<body>
+<th:block th:fragment="content">
+    <div class="page-head">
+        <div>
+            <h2>Lista de pedidos</h2>
+            <p>Registros cadastrados no sistema.</p>
+        </div>
+        <a th:href="@{/pedido/criar}" class="btn btn-accent">Novo pedido</a>
+    </div>
+
+    <div class="panel">
+        <div class="table-responsive">
+            <table class="table data-table mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Data</th>
+                        <th>Aluno</th>
+                        <th>Itens</th>
+                        <th>Total</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(pedidos)}">
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <h3>Nenhum pedido cadastrado</h3>
+                                <p>Inclua o primeiro registro para vê-lo nesta lista.</p>
+                                <a th:href="@{/pedido/criar}" class="btn btn-accent">Cadastrar pedido</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:each="pedido : ${pedidos}">
+                        <td th:text="${pedido.idPedido}"></td>
+                        <td th:text="${#temporals.format(pedido.data, 'dd/MM/yyyy')}"></td>
+                        <td>
+                            <span th:if="${pedido.aluno != null}" class="rel-badge aluno"
+                                  th:text="${pedido.aluno.nomeAluno}">Aluno</span>
+                            <span th:unless="${pedido.aluno != null}" class="rel-badge is-empty">Sem aluno</span>
+                        </td>
+                        <td th:text="${pedido.itens != null} ? ${#lists.size(pedido.itens)} : 0"></td>
+                        <td th:text="${#numbers.formatCurrency(pedido.total)}"></td>
+                        <td class="text-end text-nowrap">
+                            <a th:href="@{/pedido/editar/{id}(id=${pedido.idPedido})}" class="btn btn-sm btn-ghost">Editar</a>
+                            <a th:href="@{/pedido/excluir/{id}(id=${pedido.idPedido})}"
+                               class="btn btn-sm btn-danger-quiet"
+                               onclick="return confirm('Deseja realmente excluir este pedido?');">Excluir</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</th:block>
+<th:block th:fragment="extra"></th:block>
+</body>
+</html>

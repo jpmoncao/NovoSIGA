@@ -1,12 +1,22 @@
 package com.novosiga.novosiga.config;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.novosiga.novosiga.entity.Aluno;
 import com.novosiga.novosiga.entity.Curso;
 import com.novosiga.novosiga.entity.Disciplina;
+import com.novosiga.novosiga.entity.ItemDoPedido;
+import com.novosiga.novosiga.entity.Pedido;
+import com.novosiga.novosiga.entity.Produto;
 import com.novosiga.novosiga.entity.Professor;
 import com.novosiga.novosiga.repository.AlunoRepository;
 import com.novosiga.novosiga.repository.CursoRepository;
 import com.novosiga.novosiga.repository.DisciplinaRepository;
+import com.novosiga.novosiga.repository.PedidoRepository;
+import com.novosiga.novosiga.repository.ProdutoRepository;
 import com.novosiga.novosiga.repository.ProfessorRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -18,24 +28,33 @@ public class DataLoader implements CommandLineRunner {
     private final CursoRepository cursoRepository;
     private final DisciplinaRepository disciplinaRepository;
     private final AlunoRepository alunoRepository;
+    private final ProdutoRepository produtoRepository;
+    private final PedidoRepository pedidoRepository;
 
     public DataLoader(ProfessorRepository professorRepository,
             CursoRepository cursoRepository,
             DisciplinaRepository disciplinaRepository,
-            AlunoRepository alunoRepository) {
+            AlunoRepository alunoRepository,
+            ProdutoRepository produtoRepository,
+            PedidoRepository pedidoRepository) {
         this.professorRepository = professorRepository;
         this.cursoRepository = cursoRepository;
         this.disciplinaRepository = disciplinaRepository;
         this.alunoRepository = alunoRepository;
+        this.produtoRepository = produtoRepository;
+        this.pedidoRepository = pedidoRepository;
     }
 
     @Override
     public void run(String... args) {
-        if (professorRepository.count() > 0 || cursoRepository.count() > 0
-                || disciplinaRepository.count() > 0 || alunoRepository.count() > 0) {
-            return;
+        if (professorRepository.count() == 0 && cursoRepository.count() == 0
+                && disciplinaRepository.count() == 0 && alunoRepository.count() == 0) {
+            carregarDadosAcademicos();
         }
+        carregarProdutosEPedidos();
+    }
 
+    private void carregarDadosAcademicos() {
         Professor ana = professorRepository.save(new Professor(null, "Ana Beatriz Costa",
                 "52998224725", "329145678", "11987654321",
                 "Rua das Acacias, 120 - Sao Paulo", "Mestrado em Ciencia da Computacao"));
@@ -83,5 +102,52 @@ public class DataLoader implements CommandLineRunner {
         alunoRepository.save(new Aluno(null, "Fernanda Oliveira", "Rua da Paz, 72",
                 "Bela Vista", "Sao Paulo", "SP", "01310000", "11933332222",
                 "78912345600", null, null, cc));
+    }
+
+    private void carregarProdutosEPedidos() {
+        if (produtoRepository.count() == 0) {
+            produtoRepository.save(new Produto(null, "Caderno universitario 200 folhas",
+                    new BigDecimal("24.90"), "Tilibra", "Pepper", null, null));
+            produtoRepository.save(new Produto(null, "Mochila para notebook 15 polegadas",
+                    new BigDecimal("189.00"), "Dell", "Pro Backpack", null, null));
+            produtoRepository.save(new Produto(null, "Caneta esferografica azul",
+                    new BigDecimal("3.50"), "BIC", "Cristal", null, null));
+            produtoRepository.save(new Produto(null, "Mouse sem fio",
+                    new BigDecimal("79.90"), "Logitech", "M170", null, null));
+        }
+
+        if (pedidoRepository.count() > 0 || alunoRepository.count() == 0 || produtoRepository.count() == 0) {
+            return;
+        }
+
+        List<Aluno> alunos = alunoRepository.findAll();
+        List<Produto> produtos = produtoRepository.findAll();
+        Aluno aluno = alunos.get(0);
+        Produto caderno = produtos.get(0);
+        Produto caneta = produtos.size() > 2 ? produtos.get(2) : produtos.get(0);
+
+        Pedido pedido = new Pedido();
+        pedido.setData(LocalDate.now());
+        pedido.setAluno(aluno);
+        pedido.setItens(new ArrayList<>());
+
+        ItemDoPedido itemCaderno = new ItemDoPedido();
+        itemCaderno.setPedido(pedido);
+        itemCaderno.setProduto(caderno);
+        itemCaderno.setQuantidade(2);
+        itemCaderno.setPrecoProduto(caderno.getValor());
+        itemCaderno.setSubtotal(caderno.getValor().multiply(new BigDecimal("2")));
+        pedido.getItens().add(itemCaderno);
+
+        ItemDoPedido itemCaneta = new ItemDoPedido();
+        itemCaneta.setPedido(pedido);
+        itemCaneta.setProduto(caneta);
+        itemCaneta.setQuantidade(4);
+        itemCaneta.setPrecoProduto(caneta.getValor());
+        itemCaneta.setSubtotal(caneta.getValor().multiply(new BigDecimal("4")));
+        pedido.getItens().add(itemCaneta);
+
+        pedido.setTotal(itemCaderno.getSubtotal().add(itemCaneta.getSubtotal()));
+        pedidoRepository.save(pedido);
     }
 }

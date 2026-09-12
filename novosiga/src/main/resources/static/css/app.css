@@ -412,6 +412,11 @@ body.app-body {
   color: #314054;
 }
 
+.rel-badge.aluno {
+  background: #e8edf8;
+  color: #314054;
+}
+
 .rel-badge.is-empty {
   background: #eef1f5;
   color: var(--muted);
@@ -462,6 +467,32 @@ body.app-body {
 
 .form-panel {
   max-width: 760px;
+}
+
+.form-panel-wide {
+  max-width: 1080px;
+}
+
+.section-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.item-table {
+  min-width: 720px;
+}
+
+.pedido-total {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: 0.85rem;
+  font-size: 1.05rem;
+}
+
+.pedido-total strong {
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
 }
 
 .form-label {

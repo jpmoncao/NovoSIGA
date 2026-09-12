@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Formulário do produto', 'produto', 'Produtos', 'Cadastros / Produtos', ~{::content}, ~{::extra})}">
+<body>
+<th:block th:fragment="content">
+    <div class="page-head">
+        <div>
+            <h2 th:text="${produto.idProduto != null} ? 'Editar produto' : 'Novo produto'">Formulário do produto</h2>
+            <p>Preencha os dados e salve para atualizar a lista.</p>
+        </div>
+        <a th:href="@{/produto/listar}" class="btn btn-ghost">Voltar à lista</a>
+    </div>
+
+    <div class="panel form-panel">
+        <div class="panel-body">
+            <form th:action="@{/produto/salvar}" th:object="${produto}" method="post" enctype="multipart/form-data">
+                <input type="hidden" th:field="*{idProduto}" id="idProduto">
+
+                <div class="mb-3">
+                    <label for="arquivoFoto" class="form-label">Foto</label>
+                    <input type="file" class="form-control" id="arquivoFoto" name="arquivoFoto" accept="image/*"
+                           onchange="mostrarPreview(event)">
+                    <p class="help mb-0 mt-1">JPG, PNG ou JPEG · até 2 MB</p>
+                </div>
+                <div id="previewContainer" class="mb-3" hidden>
+                    <img id="previewImg" alt="Pré-visualização da foto" class="preview-photo">
+                </div>
+
+                <div class="mb-3">
+                    <label for="descricao" class="form-label">Descrição</label>
+                    <input type="text" class="form-control" id="descricao" th:field="*{descricao}" maxlength="120" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="marca" class="form-label">Marca</label>
+                        <input type="text" class="form-control" id="marca" th:field="*{marca}" maxlength="60" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="modelo" class="form-label">Modelo</label>
+                        <input type="text" class="form-control" id="modelo" th:field="*{modelo}" maxlength="60" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="valor" class="form-label">Valor</label>
+                    <input type="number" class="form-control" id="valor" th:field="*{valor}" min="0" step="0.01" required>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-accent">Salvar</button>
+                    <a th:href="@{/produto/listar}" class="btn btn-ghost">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</th:block>
+<th:block th:fragment="extra">
+    <script>
+        function mostrarPreview(event) {
+            const arquivo = event.target.files[0];
+            if (!arquivo) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function () {
+                const img = document.getElementById('previewImg');
+                const container = document.getElementById('previewContainer');
+                img.src = reader.result;
+                container.hidden = false;
+            };
+            reader.readAsDataURL(arquivo);
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            const idProduto = document.getElementById('idProduto').value;
+            if (!idProduto) {
+                return;
+            }
+            const fotoProduto = await fetch('/produto/foto/' + idProduto, {
+                method: 'GET'
+            });
+            if (fotoProduto.ok) {
+                const foto = await fotoProduto.blob();
+                const img = document.getElementById('previewImg');
+                img.src = URL.createObjectURL(foto);
+                const container = document.getElementById('previewContainer');
+                container.hidden = false;
+            }
+        });
+    </script>
+</th:block>
+</body>
+</html>
