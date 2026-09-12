@@ -1,99 +1,93 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário do Aluno</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-
-<body class="bg-light">
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h1 class="h4 mb-0">Formulário do Aluno</h1>
-                    </div>
-                    <div class="card-body">
-                        <form th:action="@{/aluno/salvar}" th:object="${aluno}" method="post"
-                            enctype="multipart/form-data">
-                            <input type="hidden" th:field="*{idAluno}" th:value="${aluno.idAluno}" id="idAluno">
-
-                            <div class="mb-3">
-                                <label for="foto" class="form-label">Foto</label>
-                                <input type="file" class="form-control" id="foto" name="foto" accept="image/*"
-                                    onchange="mostrarPreview(event)">
-                                <small class="text-muted d-block">Formato: JPG, PNG, JPEG</small>
-                                <small class="text-muted d-block">Tamanho máximo: 2MB</small>
-                            </div>
-                            <div id="previewContainer" class="mb-3" style="display: none;">
-                                <img id="previewImg" src="#" alt="Preview" class="rounded border"
-                                    style="width: 100px; height: 100px; object-fit: cover;">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="nomeAluno" class="form-label">Nome</label>
-                                <input type="text" class="form-control" id="nomeAluno" th:field="*{nomeAluno}"
-                                    maxlength="50" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="enderecoAluno" class="form-label">Endereço</label>
-                                <input type="text" class="form-control" id="enderecoAluno" th:field="*{enderecoAluno}"
-                                    maxlength="40" required>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="bairroAluno" class="form-label">Bairro</label>
-                                    <input type="text" class="form-control" id="bairroAluno" th:field="*{bairroAluno}"
-                                        maxlength="40" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="cidadeAluno" class="form-label">Cidade</label>
-                                    <input type="text" class="form-control" id="cidadeAluno" th:field="*{cidadeAluno}"
-                                        maxlength="30" required>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <label for="estadoAluno" class="form-label">Estado (UF)</label>
-                                    <input type="text" class="form-control" id="estadoAluno" th:field="*{estadoAluno}"
-                                        maxlength="2" required>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="cepAluno" class="form-label">CEP</label>
-                                    <input type="text" class="form-control" id="cepAluno" th:field="*{cepAluno}"
-                                        maxlength="11" required>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="telefoneAluno" class="form-label">Telefone</label>
-                                    <input type="text" class="form-control" id="telefoneAluno"
-                                        th:field="*{telefoneAluno}" maxlength="11" required>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="cpfAluno" class="form-label">CPF</label>
-                                <input type="text" class="form-control" id="cpfAluno" th:field="*{cpfAluno}"
-                                    maxlength="11" required>
-                            </div>
-
-                            <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-primary">Salvar</button>
-                                <a th:href="@{/aluno/listar}" class="btn btn-outline-secondary">Voltar à lista</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Formulário do aluno', 'aluno', 'Alunos', 'Cadastros / Alunos', ~{::content}, ~{::extra})}">
+<body>
+<th:block th:fragment="content">
+    <div class="page-head">
+        <div>
+            <h2 th:text="${aluno.idAluno != null} ? 'Editar aluno' : 'Novo aluno'">Formulário do aluno</h2>
+            <p>Preencha os dados e salve para atualizar a lista.</p>
         </div>
+        <a th:href="@{/aluno/listar}" class="btn btn-ghost">Voltar à lista</a>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="panel form-panel">
+        <div class="panel-body">
+            <form th:action="@{/aluno/salvar}" th:object="${aluno}" method="post" enctype="multipart/form-data">
+                <input type="hidden" th:field="*{idAluno}" th:value="${aluno.idAluno}" id="idAluno">
+
+                <div class="mb-3">
+                    <label for="foto" class="form-label">Foto</label>
+                    <input type="file" class="form-control" id="foto" name="foto" accept="image/*"
+                           onchange="mostrarPreview(event)">
+                    <p class="help mb-0 mt-1">JPG, PNG ou JPEG · até 2 MB</p>
+                </div>
+                <div id="previewContainer" class="mb-3" hidden>
+                    <img id="previewImg" alt="Pré-visualização da foto" class="preview-photo">
+                </div>
+
+                <div class="mb-3">
+                    <label for="nomeAluno" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="nomeAluno" th:field="*{nomeAluno}" maxlength="50" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="enderecoAluno" class="form-label">Endereço</label>
+                    <input type="text" class="form-control" id="enderecoAluno" th:field="*{enderecoAluno}" maxlength="40" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="bairroAluno" class="form-label">Bairro</label>
+                        <input type="text" class="form-control" id="bairroAluno" th:field="*{bairroAluno}" maxlength="40" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="cidadeAluno" class="form-label">Cidade</label>
+                        <input type="text" class="form-control" id="cidadeAluno" th:field="*{cidadeAluno}" maxlength="30" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="estadoAluno" class="form-label">Estado (UF)</label>
+                        <input type="text" class="form-control" id="estadoAluno" th:field="*{estadoAluno}" maxlength="2" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="cepAluno" class="form-label">CEP</label>
+                        <input type="text" class="form-control" id="cepAluno" th:field="*{cepAluno}" maxlength="11" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="telefoneAluno" class="form-label">Telefone</label>
+                        <input type="text" class="form-control" id="telefoneAluno" th:field="*{telefoneAluno}" maxlength="11" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="cpfAluno" class="form-label">CPF</label>
+                        <input type="text" class="form-control" id="cpfAluno" th:field="*{cpfAluno}" maxlength="11" required>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label for="idCurso" class="form-label">Curso</label>
+                        <select class="form-select" id="idCurso" name="curso.idCurso" required>
+                            <option value="">Selecione o curso</option>
+                            <option th:each="itemCurso : ${cursos} ?: ${@cursoService.findAll()}"
+                                    th:value="${itemCurso.idCurso}"
+                                    th:text="${itemCurso.nomeCurso}"
+                                    th:selected="${aluno.curso != null and aluno.curso.idCurso == itemCurso.idCurso}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-accent">Salvar</button>
+                    <a th:href="@{/aluno/listar}" class="btn btn-ghost">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</th:block>
+<th:block th:fragment="extra">
     <script>
         function mostrarPreview(event) {
             const arquivo = event.target.files[0];
@@ -106,7 +100,7 @@
                 const img = document.getElementById('previewImg');
                 const container = document.getElementById('previewContainer');
                 img.src = reader.result;
-                container.style.display = 'block';
+                container.hidden = false;
             };
             reader.readAsDataURL(arquivo);
         }
@@ -117,20 +111,17 @@
                 return;
             }
             const fotoAluno = await fetch('/aluno/foto/' + idAluno, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                method: 'GET'
             });
             if (fotoAluno.ok) {
                 const foto = await fotoAluno.blob();
                 const img = document.getElementById('previewImg');
                 img.src = URL.createObjectURL(foto);
                 const container = document.getElementById('previewContainer');
-                container.style.display = 'block';
+                container.hidden = false;
             }
         });
     </script>
+</th:block>
 </body>
-
 </html>

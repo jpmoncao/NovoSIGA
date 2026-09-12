@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(pageTitle, nav, heading, crumb, content, scripts)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' · NovoSIGA'">NovoSIGA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script>
+        try {
+            if (localStorage.getItem('novosiga.sidebarCollapsed') === '1') {
+                document.documentElement.classList.add('sidebar-collapsed');
+            }
+        } catch (e) {}
+    </script>
+</head>
+<body class="app-body">
+<!--
+THESIS: Cadastros acadêmicos vivem numa bancada fixa — trilho escuro de módulos à esquerda, folha de trabalho à direita — e recusam a home de cards Bootstrap sem navegação persistente.
+OWN-WORLD: Trilho tinta #14181f, papel #eef1f5, acento teal #0f766e só em ação e seleção; Source Sans 3; painéis de 12px com sombra deslocada; ícones Bootstrap de um traço.
+STORY: Secretaria encontra o módulo, lista, cadastra e volta sem perder o mapa do sistema.
+FIRST VIEWPORT: Sidebar 268px com marca e quatro cadastros; topbar com título da página; conteúdo começa no heading + ação primária.
+FORM: Operate, sidebar escura + área clara — pedido do usuário.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+-->
+<div class="app-shell">
+    <div id="sidebarBackdrop" class="sidebar-backdrop" data-sidebar-toggle></div>
+
+    <aside id="appSidebar" class="sidebar">
+        <a class="sidebar-brand" th:href="@{/novosiga}">
+            <span class="brand-mark">NS</span>
+            <span class="brand-copy">
+                <strong>NovoSIGA</strong>
+                <span>Gestão acadêmica</span>
+            </span>
+        </a>
+
+        <nav class="sidebar-nav" aria-label="Principal">
+            <a class="nav-link" th:href="@{/novosiga}" title="Início" th:classappend="${nav == 'home'} ? ' is-active'">
+                <i class="bi bi-house-door"></i>
+                <span class="nav-text">Início</span>
+            </a>
+
+            <p class="nav-label">Cadastros</p>
+            <a class="nav-link" th:href="@{/aluno/listar}" title="Alunos" th:classappend="${nav == 'aluno'} ? ' is-active'">
+                <i class="bi bi-people"></i>
+                <span class="nav-text">Alunos</span>
+            </a>
+            <a class="nav-link" th:href="@{/professor/listar}" title="Professores" th:classappend="${nav == 'professor'} ? ' is-active'">
+                <i class="bi bi-person-badge"></i>
+                <span class="nav-text">Professores</span>
+            </a>
+            <a class="nav-link" th:href="@{/curso/listar}" title="Cursos" th:classappend="${nav == 'curso'} ? ' is-active'">
+                <i class="bi bi-mortarboard"></i>
+                <span class="nav-text">Cursos</span>
+            </a>
+            <a class="nav-link" th:href="@{/disciplina/listar}" title="Disciplinas" th:classappend="${nav == 'disciplina'} ? ' is-active'">
+                <i class="bi bi-journal-text"></i>
+                <span class="nav-text">Disciplinas</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-foot">
+            <span class="sidebar-foot-text">FATEC Jales</span>
+            <button type="button" class="sidebar-collapse" data-sidebar-collapse
+                    aria-controls="appSidebar" aria-expanded="true" aria-label="Recolher menu">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+        </div>
+    </aside>
+
+    <div class="app-main">
+        <header class="topbar">
+            <div class="d-flex align-items-center gap-3">
+                <button type="button" class="menu-toggle" data-sidebar-toggle aria-label="Abrir menu">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div>
+                    <p class="crumb" th:text="${crumb}">NovoSIGA</p>
+                    <h1 th:text="${heading}">Página</h1>
+                </div>
+            </div>
+        </header>
+
+        <main class="content">
+            <th:block th:replace="${content}"></th:block>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+<th:block th:replace="${scripts}"></th:block>
+</body>
+</html>

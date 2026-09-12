@@ -45,4 +45,8 @@ public class Aluno {
 
     @Column(length = 20)
     private String tipoFoto;
+
+    @ManyToOne
+    @JoinColumn(name = "idCurso")
+    private Curso curso;
 }

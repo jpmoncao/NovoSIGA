@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 
 @Entity
 @AllArgsConstructor
@@ -28,4 +30,12 @@ public class Disciplina {
 
     @Column(nullable = false)
     private Integer cargaHorariaDisciplina;
+
+    @ManyToOne
+    @JoinColumn(name = "idProfessor")
+    private Professor professor;
+
+    @ManyToOne
+    @JoinColumn(name = "idCurso")
+    private Curso curso;
 }
