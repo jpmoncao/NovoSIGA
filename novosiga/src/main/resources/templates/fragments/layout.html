@@ -96,6 +96,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
         </header>
 
         <main class="content">
+            <div th:if="${erro}" class="alert alert-danger" role="alert" th:text="${erro}"></div>
             <th:block th:replace="${content}"></th:block>
         </main>
     </div>

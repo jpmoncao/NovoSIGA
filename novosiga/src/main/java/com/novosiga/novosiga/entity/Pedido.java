@@ -44,4 +44,16 @@ public class Pedido {
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemDoPedido> itens = new ArrayList<>();
+
+    public BigDecimal calcularTotal() {
+        BigDecimal total = BigDecimal.ZERO;
+        for (ItemDoPedido item : itens) {
+            total = total.add(item.getSubtotal());
+        }
+        return total;
+    }
+
+    public void atualizarTotal() {
+        this.total = this.calcularTotal();
+    }
 }

@@ -21,6 +21,7 @@
                     <input type="file" class="form-control" id="foto" name="foto" accept="image/*"
                            onchange="mostrarPreview(event)">
                     <p class="help mb-0 mt-1">JPG, PNG ou JPEG · até 2 MB</p>
+                    <p id="erroFoto" class="text-danger small mt-1 mb-0" hidden></p>
                 </div>
                 <div id="previewContainer" class="mb-3" hidden>
                     <img id="previewImg" alt="Pré-visualização da foto" class="preview-photo">
@@ -89,11 +90,27 @@
 </th:block>
 <th:block th:fragment="extra">
     <script>
+        const LIMITE_FOTO = 2 * 1024 * 1024;
+
+        function mostrarErroFoto(mensagem) {
+            const erro = document.getElementById('erroFoto');
+            erro.textContent = mensagem;
+            erro.hidden = !mensagem;
+        }
+
         function mostrarPreview(event) {
-            const arquivo = event.target.files[0];
+            const input = event.target;
+            const arquivo = input.files[0];
             if (!arquivo) {
+                mostrarErroFoto('');
                 return;
             }
+            if (arquivo.size > LIMITE_FOTO) {
+                mostrarErroFoto('A foto excede o limite de 2 MB. Escolha um arquivo menor.');
+                input.value = '';
+                return;
+            }
+            mostrarErroFoto('');
 
             const reader = new FileReader();
             reader.onload = function () {
@@ -106,6 +123,16 @@
         }
 
         document.addEventListener('DOMContentLoaded', async function () {
+            const form = document.querySelector('form');
+            const inputFoto = document.getElementById('foto');
+            form.addEventListener('submit', function (event) {
+                const arquivo = inputFoto.files[0];
+                if (arquivo && arquivo.size > LIMITE_FOTO) {
+                    event.preventDefault();
+                    mostrarErroFoto('A foto excede o limite de 2 MB. Escolha um arquivo menor.');
+                }
+            });
+
             const idAluno = document.getElementById('idAluno').value;
             if (!idAluno) {
                 return;
