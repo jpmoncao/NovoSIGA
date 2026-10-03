@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Alunos por curso', 'aluno-curso', 'Alunos por curso', 'Cadastros / Alunos', ~{::content}, ~{::extra})}">
+<body>
+<th:block th:fragment="content">
+    <div class="page-head">
+        <div>
+            <h2>Alunos por curso</h2>
+            <p>Selecione um curso para consultar seus alunos.</p>
+        </div>
+        <a th:href="@{/aluno/listar}" class="btn btn-ghost">Todos os dados dos alunos</a>
+    </div>
+
+    <form th:action="@{/aluno/por-curso}" method="get" class="panel p-3 mb-4">
+        <label for="idCurso" class="form-label">Curso</label>
+        <div class="d-flex flex-wrap gap-2">
+            <select id="idCurso" name="idCurso" class="form-select" style="max-width: 420px">
+                <option value="" th:selected="${idCursoSelecionado == null}">Todos os cursos</option>
+                <option th:each="curso : ${cursos}" th:value="${curso.idCurso}"
+                        th:text="${curso.nomeCurso}"
+                        th:selected="${curso.idCurso == idCursoSelecionado}"></option>
+            </select>
+            <button type="submit" class="btn btn-accent">Filtrar</button>
+        </div>
+    </form>
+
+    <div class="panel">
+        <div class="table-responsive">
+            <table class="table data-table mb-0">
+                <thead><tr><th>Curso</th><th>ID do aluno</th><th>Aluno</th><th class="text-end">Ação</th></tr></thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(alunosPorCurso)}">
+                        <td colspan="4"><div class="empty-state">
+                            <h3>Nenhum aluno encontrado</h3>
+                            <p>Não há alunos vinculados ao curso selecionado.</p>
+                        </div></td>
+                    </tr>
+                    <tr th:each="aluno : ${alunosPorCurso}">
+                        <td><span th:if="${aluno.idCurso() != null}" class="rel-badge curso"
+                                  th:text="${aluno.nomeCurso()}"></span>
+                            <span th:unless="${aluno.idCurso() != null}" class="rel-badge is-empty">Sem curso</span></td>
+                        <td th:text="${aluno.idAluno()}"></td>
+                        <td th:text="${aluno.nomeAluno()}"></td>
+                        <td class="text-end"><a class="btn btn-sm btn-ghost"
+                                th:href="@{/aluno/editar/{id}(id=${aluno.idAluno()})}">Ver aluno</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</th:block>
+<th:block th:fragment="extra"></th:block>
+</body>
+</html>

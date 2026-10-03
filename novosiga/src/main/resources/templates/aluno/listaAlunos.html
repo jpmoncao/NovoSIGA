@@ -8,7 +8,10 @@
             <h2>Lista de alunos</h2>
             <p>Registros cadastrados no sistema.</p>
         </div>
-        <a th:href="@{/aluno/criar}" class="btn btn-accent">Novo aluno</a>
+        <div class="d-flex gap-2">
+            <a th:href="@{/aluno/por-curso}" class="btn btn-ghost">Alunos por curso</a>
+            <a th:href="@{/aluno/criar}" class="btn btn-accent">Novo aluno</a>
+        </div>
     </div>
 
     <div class="panel">

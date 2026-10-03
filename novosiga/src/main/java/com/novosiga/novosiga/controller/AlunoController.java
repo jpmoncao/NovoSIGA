@@ -72,6 +72,14 @@ public class AlunoController {
         return "aluno/listaAlunos";
     }
 
+    @GetMapping("/por-curso")
+    public String listarPorCurso(@RequestParam(required = false) Integer idCurso, Model model) {
+        model.addAttribute("cursos", cursoService.findAll());
+        model.addAttribute("idCursoSelecionado", idCurso);
+        model.addAttribute("alunosPorCurso", alunoService.listarPorCurso(idCurso));
+        return "aluno/alunosPorCurso";
+    }
+
     @GetMapping("/criar")
     public String criarForm(Model model) {
         Aluno aluno = new Aluno();

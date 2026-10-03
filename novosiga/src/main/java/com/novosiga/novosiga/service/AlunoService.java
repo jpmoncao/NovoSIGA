@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.novosiga.novosiga.repository.AlunoRepository;
 import com.novosiga.novosiga.entity.Aluno;
+import com.novosiga.novosiga.dto.AlunoCursoDTO;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,10 @@ public class AlunoService {
 
     public List<Aluno> findAll() {
         return alunoRepository.findAll();
+    }
+
+    public List<AlunoCursoDTO> listarPorCurso(Integer idCurso) {
+        return alunoRepository.listarPorCurso(idCurso);
     }
 
     public void deleteById(Integer id) {

@@ -51,6 +51,10 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
                 <i class="bi bi-people"></i>
                 <span class="nav-text">Alunos</span>
             </a>
+            <a class="nav-link" th:href="@{/aluno/por-curso}" title="Alunos por curso" th:classappend="${nav == 'aluno-curso'} ? ' is-active'">
+                <i class="bi bi-diagram-3"></i>
+                <span class="nav-text">Alunos por curso</span>
+            </a>
             <a class="nav-link" th:href="@{/professor/listar}" title="Professores" th:classappend="${nav == 'professor'} ? ' is-active'">
                 <i class="bi bi-person-badge"></i>
                 <span class="nav-text">Professores</span>
@@ -93,6 +97,9 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
                     <h1 th:text="${heading}">Página</h1>
                 </div>
             </div>
+            <form th:action="@{/logout}" method="post" class="ms-auto">
+                <button type="submit" class="btn btn-outline-secondary btn-sm">Sair</button>
+            </form>
         </header>
 
         <main class="content">
