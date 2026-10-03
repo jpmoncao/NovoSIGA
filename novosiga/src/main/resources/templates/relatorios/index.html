@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Relatórios', 'relatorios', 'Relatórios', 'NovoSIGA', ~{::content}, ~{::extra})}">
+<body>
+<th:block th:fragment="content">
+    <div class="page-head">
+        <div>
+            <h2>Relatórios</h2>
+            <p>Escolha um relatório para consultar os dados do sistema.</p>
+        </div>
+    </div>
+    <div class="row g-4">
+        <div class="col-12 col-md-6 col-xl-4">
+            <article class="panel h-100">
+                <div class="panel-body d-flex flex-column h-100">
+                    <div class="mb-3"><i class="bi bi-people fs-2 text-success"></i></div>
+                    <h3 class="h5">Relatório de alunos</h3>
+                    <p class="text-secondary flex-grow-1">Consulte a relação de alunos cadastrados e seus respectivos cursos.</p>
+                    <a th:href="@{/relatorios/alunos}" class="btn btn-accent align-self-start">Abrir relatório</a>
+                </div>
+            </article>
+        </div>
+    </div>
+</th:block>
+<th:block th:fragment="extra"></th:block>
+</body>
+</html>

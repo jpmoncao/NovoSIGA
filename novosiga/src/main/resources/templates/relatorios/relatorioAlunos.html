@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout('Relatório de alunos', 'relatorios', 'Relatório de alunos', 'Relatórios', ~{::content}, ~{::extra})}">
+
+<body>
+    <th:block th:fragment="content">
+        <div class="page-head">
+            <div>
+                <h2>Relatório de alunos</h2>
+                <p>Relação de alunos cadastrados no NovoSIGA.</p>
+            </div>
+            <a th:href="@{/relatorios}" class="btn btn-ghost">Voltar aos relatórios</a>
+        </div>
+        <div class="panel">
+            <div class="panel-body d-flex justify-content-between align-items-center gap-3 flex-wrap">
+                <p class="mb-0 text-secondary"><i class="bi bi-people me-2"></i><span th:text="${#lists.size(alunos)} + ' aluno(s) encontrado(s)'"></span></p>
+                <div>
+                    <a th:href="@{/aluno/por-curso}" class="btn btn-ghost">Consultar por curso</a>
+                    <a th:href="@{/relatorios/alunos/pdf}" class="btn btn-accent ms-2">Baixar PDF</a>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table data-table mb-0">
+                    <thead><tr><th>ID</th><th>Nome</th><th>CPF</th><th>Curso</th></tr></thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(alunos)}"><td colspan="4"><div class="empty-state"><h3>Nenhum aluno cadastrado</h3><p>Não há registros para exibir.</p></div></td></tr>
+                        <tr th:each="aluno : ${alunos}">
+                            <td th:text="${aluno.idAluno}"></td>
+                            <td th:text="${aluno.nomeAluno}"></td>
+                            <td th:text="${aluno.cpfAluno}"></td>
+                            <td th:text="${aluno.curso != null ? aluno.curso.nomeCurso : 'Sem curso'}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </th:block>
+    <th:block th:fragment="extra"></th:block>
+</body>
+
+</html>

@@ -75,6 +75,12 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
                 <i class="bi bi-receipt"></i>
                 <span class="nav-text">Pedidos</span>
             </a>
+
+            <p class="nav-label">Consultas</p>
+            <a class="nav-link" th:href="@{/relatorios}" title="Relatórios" th:classappend="${nav == 'relatorios'} ? ' is-active'">
+                <i class="bi bi-file-earmark-bar-graph"></i>
+                <span class="nav-text">Relatórios</span>
+            </a>
         </nav>
 
         <div class="sidebar-foot">
